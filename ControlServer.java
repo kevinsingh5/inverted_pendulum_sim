@@ -156,41 +156,41 @@ class PoleServer_handler implements Runnable {
       double action = 0;
        // if (angle > 0 && angleDiff < 0) {
        if (angle > 0) {
-           if (angle > 65 * 0.01745) {
-               action = 10;
-           } else if (angle > 60 * 0.01745) {
-               action = 8;
-           } else if (angle > 50 * 0.01745) {
-               action = 7.5;
-           } else if (angle > 30 * 0.01745) {
-               action = 4;
-           } else if (angle > 20 * 0.01745) {
-               action = 2;
-           } else if (angle > 10 * 0.01745) {
+           if (angle > 256 * 0.01745) {
+               action = 8; //10;
+           } else if (angle > 128 * 0.01745) {
+               action = 6; //8;
+           } else if (angle > 64 * 0.01745) {
+               action = 4; //7.5;
+           } else if (angle > 32 * 0.01745) {
+               action = 2; //4;
+           } else if (angle > 16 * 0.01745) {
+               action = 1; //2;
+           } else if (angle > 8 * 0.01745) {
                action = 0.5;
-           } else if(angle >5*0.01745){
+           } else if(angle > 4 * 0.01745){
                action = 0.2;
-           } else if(angle >2*0.01745){
+           } else if(angle > 2 * 0.01745){
                action = 0.1;
            } else {
                action = 0;
            }
        } else if (angle < 0) {
-           if (angle < -65 * 0.01745) {
-               action = -10;
-           } else if (angle < -60 * 0.01745) {
-               action = -8;
-           } else if (angle < -50 * 0.01745) {
-               action = -7.5;
-           } else if (angle < -30 * 0.01745) {
-               action = -4;
-           } else if (angle < -20 * 0.01745) {
-               action = -2;
-           } else if (angle < -10 * 0.01745) {
+           if (angle < -256 * 0.01745) {
+               action = -8; //-10;
+           } else if (angle < -128 * 0.01745) {
+               action = -6; //-8;
+           } else if (angle < -64 * 0.01745) {
+               action = -4; //-7.5;
+           } else if (angle < -32 * 0.01745) {
+               action = -2; //-4;
+           } else if (angle < -16 * 0.01745) {
+               action = -1; //-2;
+           } else if (angle < -8 * 0.01745) {
                action = -0.5;
-           } else if(angle <-5*0.01745){
+           } else if(angle < -4 * 0.01745){
                action = -0.2;
-           } else if(angle <-2*0.01745){
+           } else if(angle < -2 * 0.01745){
                action = -0.1;
            } else {
                action = 0;

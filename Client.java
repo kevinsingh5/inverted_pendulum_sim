@@ -16,7 +16,7 @@ public class Client extends Applet {
     double threshold = 5;
     // The speed of simulation
     // (How many simulation second elapses when 1 second real time elapses)
-    double simSpeed = 0.1;
+    double simSpeed = 0.5;
     // Sensor sampling rate (per simulation second)
     double sensorSamplingRate = 100;
     // advance of simulation time (in second) per step
@@ -30,7 +30,7 @@ public class Client extends Applet {
     Thread updatingUIThread;
     UpdatingUIThread animator;
     // frames per second for updating UI
-    int fps = 10;
+    int fps = 20;
     // simulation time between two samples (in seconds)
     double sensorSamplingPeriod_sim = 1.0 / sensorSamplingRate;
     double sensorSamplingPeriod_phy = sensorSamplingPeriod_sim / simSpeed;
