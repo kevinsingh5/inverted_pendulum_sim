@@ -9,7 +9,7 @@ public class ControlServer {
 
     private static ServerSocket serverSocket;
     private static final int port = 25533;
-
+    
     /**
      * Main method that creates new socket and PoleServer instance and runs it.
      */
@@ -35,6 +35,7 @@ public class ControlServer {
 class PoleServer_handler implements Runnable {
     // Set the number of poles
     private static final int NUM_POLES = 1;
+    double integrals[] = new double[NUM_POLES];
 
     static ServerSocket providerSocket;
     Socket connection = null;
@@ -104,7 +105,7 @@ class PoleServer_handler implements Runnable {
                   
                   System.out.println("server < pole["+i+"]: "+angle+"  "
                       +angleDot+"  "+pos+"  "+posDot);
-                  actions[i] = calculate_action(angle, angleDot, pos, posDot);
+                  actions[i] = calculate_action(angle, angleDot, pos, posDot, i);
                 }
 
                 sendMessage_doubleArray(actions);
@@ -152,13 +153,18 @@ class PoleServer_handler implements Runnable {
     // TODO: Current implementation assumes that each pole is controlled
     // independently. The interface needs to be changed if the control of one
     // pendulum needs sensing data from other pendulums.
-    double calculate_action(double angle, double angleDot, double pos, double posDot) {
+    double calculate_action(double angle, double angleDot, double pos, double posDot, int i) {
       double action = 0;
        // if (angle > 0 && angleDiff < 0) {
         double factor = 0.01745;
         double desiredPos = 2;
-        double setPos = ((pos - desiredPos) * 0.2 + posDot * 2.71 * 0.2);
-        action = 100 * (angle + angleDot + setPos * 0.5) * factor;
+        double error = (pos-desiredPos);
+        integrals[i]+=error/100;
+        //if(Math.abs(error) < 0.02 && Math.abs(posDot) < 0.02)
+          //  integrals[i] = 0;
+        double setPos = (error + posDot * 2.71 + 0.05 * integrals[i]);
+        action = 100 * (angle + angleDot * 2.71 + setPos * 0.2) * factor;
+        //TODO: integral term for angle, change coefficients.
 /*       if (angle > 0) {
            if (angle > 256 * 0.01745) {
                action = 8; //10;
