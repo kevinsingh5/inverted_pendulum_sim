@@ -155,7 +155,9 @@ class PoleServer_handler implements Runnable {
     double calculate_action(double angle, double angleDot, double pos, double posDot) {
       double action = 0;
        // if (angle > 0 && angleDiff < 0) {
-       if (angle > 0) {
+        double factor = 0.01745;
+        action = 100 * (angle + angleDot) * factor;
+/*       if (angle > 0) {
            if (angle > 256 * 0.01745) {
                action = 8; //10;
            } else if (angle > 128 * 0.01745) {
@@ -197,7 +199,7 @@ class PoleServer_handler implements Runnable {
            }
        } else {
            action = 0.;
-       }
+       }*/
        return action;
    }
 
