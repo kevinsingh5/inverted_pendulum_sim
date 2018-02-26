@@ -156,7 +156,9 @@ class PoleServer_handler implements Runnable {
       double action = 0;
        // if (angle > 0 && angleDiff < 0) {
         double factor = 0.01745;
-        action = 100 * (angle + angleDot) * factor;
+        double desiredPos = 2;
+        double setPos = ((pos - desiredPos) * 0.2 + posDot * 2.71 * 0.2);
+        action = 100 * (angle + angleDot + setPos * 0.5) * factor;
 /*       if (angle > 0) {
            if (angle > 256 * 0.01745) {
                action = 8; //10;
