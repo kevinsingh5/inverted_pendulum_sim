@@ -165,6 +165,31 @@ class PoleServer_handler implements Runnable {
         double setPos = (error + posDot * 2.71 + 0.05 * integrals[i]);
         action = 100 * (angle + angleDot * 2.71 + setPos * 0.2) * factor;
         //TODO: integral term for angle, change coefficients.
+        /* START: improved factoring of above code, for presentation to Albert
+        
+            Convention is P then I then D, Angle then Position
+        
+            change integrals name to int_ang
+            create identical array called int_pos
+            create final array K_ang = {c0, c1, c2}, K_pos = {c3, c4, c5}, and K_con = {c6, c7} - for 8 distinct coefficients 
+            
+            e_ang = angle;
+            d_ang = angleDot;
+            int_ang[i]+=e_ang/SampleRate;
+            double ang_con = K_ang[0] * e_ang + K_ang[1] * int_ang[i] + K_ang[2] * d_ang;
+            
+            e_pos = pos - desiredPos;
+            d_pos = posDot;
+            int_pos[i]+=e_pos/SampleRate;
+            double pos_con = K_pos[0] * e_pos + K_pos[1] * int_pos[i] + K_pos[2] * d_pos;
+            
+            action = (ang_con * K_con[0] + pos_con * K_con[1]) * factor ;
+            
+            Values for K that should with this code replicate our best run (pre-integral) are:
+                1, 0, 1 ----- 1, 0, 5 ----- 1, 0.2
+            
+        */
+        
 /*       if (angle > 0) {
            if (angle > 256 * 0.01745) {
                action = 8; //10;
