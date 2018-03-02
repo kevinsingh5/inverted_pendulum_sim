@@ -35,7 +35,7 @@ public class ControlServer {
 class PoleServer_handler implements Runnable {
     // Set the number of poles
     private static final int NUM_POLES = 1;
-    double integrals[] = new double[NUM_POLES];
+    
 
     static ServerSocket providerSocket;
     Socket connection = null;
@@ -153,17 +153,26 @@ class PoleServer_handler implements Runnable {
     // TODO: Current implementation assumes that each pole is controlled
     // independently. The interface needs to be changed if the control of one
     // pendulum needs sensing data from other pendulums.
+    double int_ang[] = new double[NUM_POLES];
+    double int_pos[] = new double[NUM_POLES];
+    // P - I - D
+    // ANGLE CONTROLLER - POSITION CONTROLLER
+    double final K_ang[] = {1,0,0};
+    double final K_pos[] = {1,0,0};
+    double final K_con[] = {1,1};
+    
     double calculate_action(double angle, double angleDot, double pos, double posDot, int i) {
-      double action = 0;
+        double action = 0;
        // if (angle > 0 && angleDiff < 0) {
         double factor = 0.01745;
         double desiredPos = 2;
-        double error = (pos-desiredPos);
+        
+        /*double error = (pos-desiredPos);
         integrals[i]+=error/100;
         //if(Math.abs(error) < 0.02 && Math.abs(posDot) < 0.02)
           //  integrals[i] = 0;
         double setPos = (error + posDot * 2.71 + 0.05 * integrals[i]);
-        action = 100 * (angle + angleDot * 2.71 + setPos * 0.2) * factor;
+        action = 100 * (angle + angleDot * 2.71 + setPos * 0.2) * factor;*/
         //TODO: integral term for angle, change coefficients.
         /* START: improved factoring of above code, for presentation to Albert
         
@@ -172,7 +181,7 @@ class PoleServer_handler implements Runnable {
             change integrals name to int_ang
             create identical array called int_pos
             create final array K_ang = {c0, c1, c2}, K_pos = {c3, c4, c5}, and K_con = {c6, c7} - for 8 distinct coefficients 
-            
+        */
             e_ang = angle;
             int_ang[i]+=e_ang/SampleRate;
             d_ang = angleDot;
@@ -184,7 +193,7 @@ class PoleServer_handler implements Runnable {
             double pos_con = K_pos[0] * e_pos + K_pos[1] * int_pos[i] + K_pos[2] * d_pos;
             
             action = (ang_con * K_con[0] + pos_con * K_con[1]) * factor ;
-            
+            /*
             Values for K that should with this code replicate our best run (pre-integral) are:
                 1, 0, 1 ----- 1, 0, 5 ----- 1, 0.2
             
