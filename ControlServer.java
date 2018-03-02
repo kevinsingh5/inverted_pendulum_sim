@@ -182,14 +182,14 @@ class PoleServer_handler implements Runnable {
             create identical array called int_pos
             create final array K_ang = {c0, c1, c2}, K_pos = {c3, c4, c5}, and K_con = {c6, c7} - for 8 distinct coefficients 
         */
-            e_ang = angle;
+            double e_ang = angle;
             int_ang[i]+=e_ang/SampleRate;
-            d_ang = angleDot;
+            double d_ang = angleDot;
             double ang_con = K_ang[0] * e_ang + K_ang[1] * int_ang[i] + K_ang[2] * d_ang;
             
-            e_pos = pos - desiredPos;
+            double e_pos = pos - desiredPos;
             int_pos[i]+=e_pos/SampleRate;
-            d_pos = posDot;
+            double d_pos = posDot;
             double pos_con = K_pos[0] * e_pos + K_pos[1] * int_pos[i] + K_pos[2] * d_pos;
             
             action = (ang_con * K_con[0] + pos_con * K_con[1]) * factor ;
