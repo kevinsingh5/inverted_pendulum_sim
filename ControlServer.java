@@ -157,6 +157,10 @@ class PoleServer_handler implements Runnable {
     double int_pos[] = new double[NUM_POLES];
     // P - I - D
     // ANGLE CONTROLLER - POSITION CONTROLLER
+    // Task 1 original predicted constants - 1 0 1, 0 0 0, 100 0
+
+    // Task 2 original predicted constants - 1 0 1, 1 0 2.71, 100 10
+
     final double K_ang[] = {1, 0.05, 7};
     final double K_pos[] = {1, 1, 6};
     final double K_con[] = {1, 0.2};
@@ -195,8 +199,7 @@ class PoleServer_handler implements Runnable {
             
             action = (ang_con * K_con[0] + pos_con * K_con[1]) * factor;
             /*
-            Values for K that should with this code replicate our best run (pre-integral) are:
-                1, 0, 1 ----- 1, 0, 5 ----- 1, 0.2
+            
             
         */
         
