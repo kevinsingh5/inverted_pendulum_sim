@@ -157,15 +157,16 @@ class PoleServer_handler implements Runnable {
     double int_pos[] = new double[NUM_POLES];
     // P - I - D
     // ANGLE CONTROLLER - POSITION CONTROLLER
-    double final K_ang[] = {1,0,0};
-    double final K_pos[] = {1,0,0};
-    double final K_con[] = {1,1};
-    
+    final double K_ang[] = {1, 0.05, 7};
+    final double K_pos[] = {1, 1, 6};
+    final double K_con[] = {1, 0.2};
+    final int sampleRate = 100;
+
     double calculate_action(double angle, double angleDot, double pos, double posDot, int i) {
         double action = 0;
        // if (angle > 0 && angleDiff < 0) {
         double factor = 0.01745;
-        double desiredPos = 2;
+        double desiredPos = 2.0;
         
         /*double error = (pos-desiredPos);
         integrals[i]+=error/100;
@@ -173,9 +174,9 @@ class PoleServer_handler implements Runnable {
           //  integrals[i] = 0;
         double setPos = (error + posDot * 2.71 + 0.05 * integrals[i]);
         action = 100 * (angle + angleDot * 2.71 + setPos * 0.2) * factor;*/
+
         //TODO: integral term for angle, change coefficients.
         /* START: improved factoring of above code, for presentation to Albert
-        
             Convention is P then I then D, Angle then Position
         
             change integrals name to int_ang
@@ -183,16 +184,16 @@ class PoleServer_handler implements Runnable {
             create final array K_ang = {c0, c1, c2}, K_pos = {c3, c4, c5}, and K_con = {c6, c7} - for 8 distinct coefficients 
         */
             double e_ang = angle;
-            int_ang[i]+=e_ang/SampleRate;
+            int_ang[i] += e_ang/sampleRate;     
             double d_ang = angleDot;
             double ang_con = K_ang[0] * e_ang + K_ang[1] * int_ang[i] + K_ang[2] * d_ang;
             
             double e_pos = pos - desiredPos;
-            int_pos[i]+=e_pos/SampleRate;
+            int_pos[i] += e_pos/sampleRate;
             double d_pos = posDot;
             double pos_con = K_pos[0] * e_pos + K_pos[1] * int_pos[i] + K_pos[2] * d_pos;
             
-            action = (ang_con * K_con[0] + pos_con * K_con[1]) * factor ;
+            action = (ang_con * K_con[0] + pos_con * K_con[1]) * factor;
             /*
             Values for K that should with this code replicate our best run (pre-integral) are:
                 1, 0, 1 ----- 1, 0, 5 ----- 1, 0.2
