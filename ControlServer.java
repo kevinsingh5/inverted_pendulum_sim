@@ -34,7 +34,7 @@ public class ControlServer {
  */
 class PoleServer_handler implements Runnable {
     // Set the number of poles
-    private static final int NUM_POLES = 1;
+    private static final int NUM_POLES = 2;
     
 
     static ServerSocket providerSocket;
@@ -87,6 +87,7 @@ class PoleServer_handler implements Runnable {
                     continue;
                 }
                 
+                double desiredPos = 2.0;
                 double[] data= (double[])(obj);
                 assert(data.length == NUM_POLES * 4);
                 double[] actions = new double[NUM_POLES];
@@ -98,14 +99,21 @@ class PoleServer_handler implements Runnable {
                 // the control of one pendulum needs sensing data from other
                 // pendulums.
                 for (int i = 0; i < NUM_POLES; i++) {
-                  angle = data[i*4+0];
-                  angleDot = data[i*4+1];
-                  pos = data[i*4+2];
-                  posDot = data[i*4+3];
-                  
-                  System.out.println("server < pole["+i+"]: "+angle+"  "
-                      +angleDot+"  "+pos+"  "+posDot);
-                  actions[i] = calculate_action(angle, angleDot, pos, posDot, i);
+                    angle = data[i*4+0];
+                    angleDot = data[i*4+1];
+                    pos = data[i*4+2];
+                    posDot = data[i*4+3];
+                    
+                    System.out.println("server < pole["+i+"]: "+angle+"  "
+                        +angleDot+"  "+pos+"  "+posDot);
+                    if (i == 0) 
+                        desiredPos = 2.0;
+                    else {
+                        double sign = (pos - data[(i-1)*4+2])/Math.abs((pos - data[(i-1)*4+2]));
+                        desiredPos = 1.5 * sign + data[(i-1)*4+2] + data[(i-1)*4+3] * 2;
+                    }
+                        
+                    actions[i] = calculate_action(angle, angleDot, pos, posDot, i, desiredPos);
                 }
 
                 sendMessage_doubleArray(actions);
@@ -166,11 +174,11 @@ class PoleServer_handler implements Runnable {
     final double K_con[] = {100, 10};
     final int sampleRate = 100;
 
-    double calculate_action(double angle, double angleDot, double pos, double posDot, int i) {
+    double calculate_action(double angle, double angleDot, double pos, double posDot, int i, double desiredPos) {
         double action = 0;
        // if (angle > 0 && angleDiff < 0) {
         double factor = 0.01745;
-        double desiredPos = 2.0;
+        //        double desiredPos = 2.0;
         
         /*double error = (pos-desiredPos);
         integrals[i]+=error/100;
@@ -194,7 +202,7 @@ class PoleServer_handler implements Runnable {
             double e_pos = pos - desiredPos;
             int_pos[i] += e_pos/sampleRate;
             double d_pos = posDot;
-            double pos_con = K_pos[0] * e_pos + K_pos[1] * int_pos[i] + K_pos[2] * d_pos;
+            double pos_con = K_pos[0] * Math.max(-1.0, Math.min(1.0, e_pos)) + K_pos[1] * int_pos[i] + K_pos[2] * d_pos;
             
             action = (ang_con * K_con[0] + pos_con * K_con[1]) * factor;
             /*
