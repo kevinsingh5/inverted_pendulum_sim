@@ -1,0 +1,35 @@
+March 5, 2018
+
+        Assignment 2 report for team KnightRider
+
+
+We have 2 PID controllers, each with the PD components active, one for the angle, another for the position. The error for the 
+    position was clamped to a magnitude of 1.0 meter.
+All of our constants for the controllers were 1, except for the constant for the velocity of the car, which was e (2.71).
+The controllers were then scaled by different amounts, the angle controller was scaled * 100, whereas the position controller
+    was scaled * 10.
+The entire output for the action was then multiplied by the original factor (0.01745).
+
+
+Our test cases involved using two cars and positioning the second car to either side of the first car as well as either side
+    of the first car's direction of motion.
+We also tested using different start and finishing postions.
+
+
+The files submitted are the following:
+    ControlServer.java - here we implemented our PID controllers and modified the parameters of calculate_action()
+    Physics.java - part of adding a second car to the simulation
+
+
+To run our simulation, use the same instructions as the original README provided:
+    make all
+    make server
+    make client (on different terminal)
+
+    The original position for car 1 is -2.0 and its desired position is 2.0
+    The original position for car 2 is 2.0 and its desired position is 1.5 meters from car 1
+    
+    This configuration involves balancing the pole, balancing the pole while changing position and 
+        balancing two poles at a particular distance without crashing them.
+
+    

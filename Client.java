@@ -30,7 +30,7 @@ public class Client extends Applet {
     Thread updatingUIThread;
     UpdatingUIThread animator;
     // frames per second for updating UI
-    int fps = 20;
+    int fps = 10;
     // simulation time between two samples (in seconds)
     double sensorSamplingPeriod_sim = 1.0 / sensorSamplingRate;
     double sensorSamplingPeriod_phy = sensorSamplingPeriod_sim / simSpeed;
