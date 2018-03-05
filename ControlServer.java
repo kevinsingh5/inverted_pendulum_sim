@@ -155,15 +155,15 @@ class PoleServer_handler implements Runnable {
     // pendulum needs sensing data from other pendulums.
     double int_ang[] = new double[NUM_POLES];
     double int_pos[] = new double[NUM_POLES];
+
     // P - I - D
     // ANGLE CONTROLLER - POSITION CONTROLLER
     // Task 1 original predicted constants - (1 0 1), (0 0 0), (100 0)
-
     // Task 2 original predicted constants - (1 0 1), (1 0 2.71), (100 10)
 
-    final double K_ang[] = {1, 0.05, 7};
-    final double K_pos[] = {1, 1, 6};
-    final double K_con[] = {1, 0.2};
+    final double K_ang[] = {1, 0, 1};
+    final double K_pos[] = {1, 0, 2.71};
+    final double K_con[] = {100, 10};
     final int sampleRate = 100;
 
     double calculate_action(double angle, double angleDot, double pos, double posDot, int i) {
@@ -179,7 +179,6 @@ class PoleServer_handler implements Runnable {
         double setPos = (error + posDot * 2.71 + 0.05 * integrals[i]);
         action = 100 * (angle + angleDot * 2.71 + setPos * 0.2) * factor;*/
 
-        //TODO: integral term for angle, change coefficients.
         /* START: improved factoring of above code, for presentation to Albert
             Convention is P then I then D, Angle then Position
         
